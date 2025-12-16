@@ -53,16 +53,21 @@ class Chunk:
     """
     Chunk模型 - 表示一个最终要向量化和入库的文本段落单位
     """
+    # === 必需字段（无默认值）必须放在最前面 ===
     # 核心必需字段（4个）
     file_id: str  # 来源于Document
     industry: str  # 来源于Document
     chunk_index: int  # 在当前文件内的递增索引（从0或1开始）
     text: str  # chunk的文本内容
     
-    # 引用必需字段（3个）
+    # 引用必需字段（2个必需）
     page_number: int  # 主要页码（单页chunk=该页，跨页chunk=起始页）
-    s3_url: Optional[str] = None  # 来自Document
     source_file: str  # 来自Document.source_file
+    s3_url: Optional[str] = None  # 来自Document
+    
+    # === 可选字段（有默认值）放在后面 ===
+    # 引用必需字段（1个可选）
+    s3_url: Optional[str] = None  # 来自Document
     
     # 跨页字段（可选，但强烈建议写上）
     page_start: Optional[int] = None  # 起始页码

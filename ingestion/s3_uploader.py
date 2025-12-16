@@ -64,7 +64,10 @@ def upload_pdf_to_s3(document: Document, overwrite: bool = False) -> Optional[st
             s3_client.head_object(Bucket=S3_BUCKET_NAME, Key=object_key)
             # 如果没有抛异常，说明对象已存在
             logger.info(f"S3 对象已存在，跳过上传: s3://{S3_BUCKET_NAME}/{object_key}")
-            document.s3_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{object_key}"
+            if S3_REGION:
+                document.s3_url = f"https://{S3_BUCKET_NAME}.s3.{S3_REGION}.amazonaws.com/{object_key}"
+            else:
+                document.s3_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{object_key}"
             return document.s3_url
         except ClientError as e:
             # 404 时才继续上传，其他错误需要记录
@@ -77,7 +80,12 @@ def upload_pdf_to_s3(document: Document, overwrite: bool = False) -> Optional[st
         with pdf_path.open("rb") as f:
             s3_client.upload_fileobj(f, S3_BUCKET_NAME, object_key)
 
-        s3_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{object_key}"
+        # 构建包含 region 的 S3 URL
+        if S3_REGION:
+             s3_url = f"https://{S3_BUCKET_NAME}.s3.{S3_REGION}.amazonaws.com/{object_key}"
+        else:
+             s3_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{object_key}"
+        
         document.s3_url = s3_url
         logger.info(f"PDF 上传到 S3 成功: {s3_url}")
         return s3_url

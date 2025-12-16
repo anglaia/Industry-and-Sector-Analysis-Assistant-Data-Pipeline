@@ -44,3 +44,7 @@ logs/
 .DS_Store
 Thumbs.db
 
+
+/anythingok-file_accessKeys.csv
+.json
+.jsonl

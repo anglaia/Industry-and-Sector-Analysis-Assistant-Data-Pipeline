@@ -17,7 +17,7 @@ from core.utils import generate_file_id
 from processing.pdf_extractor import extract_pages
 from processing.text_cleaner import clean_pages
 from processing.chunker import chunk_pages
-from io.local_store import save_chunks_to_jsonl
+from data_io.local_store import save_chunks_to_jsonl
 from ingestion.s3_uploader import upload_pdf_to_s3
 from config.settings import LOG_FILE, LOG_LEVEL, S3_BUCKET_NAME
 
