@@ -77,7 +77,7 @@ def _embed_with_gemini(chunks: List[Chunk]) -> List[EmbeddingRecord]:
                 # 处理返回结果
                 # Gemini API返回格式：{"embeddings": [[...], [...]]} 或直接是列表
                 if isinstance(result, dict):
-                    embeddings_list = result.get("embeddings", [])
+                    embeddings_list = result.get("embedding", result.get("embeddings", []))
                 else:
                     embeddings_list = result if isinstance(result, list) else [result]
                 
