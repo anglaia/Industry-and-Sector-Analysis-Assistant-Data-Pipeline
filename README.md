@@ -243,6 +243,29 @@ python run_pipeline_full.py "data/report.pdf" "AI" "AI Report 2024" "2024"
 - Pinecone索引：向量已写入
 - 日志文件：`logs/pipeline.log`
 
+### 方式3：批量处理多个PDF
+
+这个脚本会扫描指定目录下的所有 PDF 文件，并逐个执行端到端处理。
+
+```bash
+python run_pipeline_batch.py --input_dir "data" --industry "education"
+```
+
+**示例：**
+```bash
+python run_pipeline_batch.py --input_dir "data" --industry "finance" --year "2024"
+```
+
+**参数说明**
+- `--input_dir`（可选）：包含 PDF 文件的目录路径，默认 `"data"`
+- `--industry`（可选）：行业分类，默认 `"education"`
+- `--year`（可选）：文档年份，默认 `None`
+
+**输出：**
+- 对每个文件执行完整处理流程
+- 汇总成功/失败统计
+- 日志文件：`logs/pipeline.log`
+
 ### 参数说明
 
 - `pdf_path`（必需）：PDF文件的路径
@@ -369,22 +392,13 @@ python run_pipeline_full.py "data/report.pdf" "AI" "AI Report 2024" "2024"
 
 ### Q6: 如何批量处理多个PDF？
 
-可以编写一个简单的批处理脚本：
+可以使用提供的批量处理脚本 `run_pipeline_batch.py`：
 
-```python
-import os
-from pathlib import Path
-from run_pipeline_full import process_single_pdf_end_to_end
-
-pdf_dir = Path("data")
-for pdf_file in pdf_dir.glob("*.pdf"):
-    process_single_pdf_end_to_end(
-        pdf_path=str(pdf_file),
-        industry="general",
-        title=pdf_file.stem,
-        year="2024"
-    )
+```bash
+python run_pipeline_batch.py --input_dir "data" --industry "education"
 ```
+
+该脚本会自动扫描指定目录下的所有 PDF 文件并进行处理。
 
 ## 📝 注意事项
 
@@ -397,7 +411,7 @@ for pdf_file in pdf_dir.glob("*.pdf"):
 ## 🔄 下一步
 
 - [ ] 支持更多embedding提供商（OpenAI等）
-- [ ] 支持批量处理多个PDF
+- [x] 支持批量处理多个PDF
 - [ ] 添加进度条显示
 - [ ] 支持从JSONL恢复处理流程
 - [ ] 添加单元测试
