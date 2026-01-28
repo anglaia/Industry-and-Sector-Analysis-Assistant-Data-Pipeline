@@ -53,12 +53,14 @@ AWS_SECRET_ACCESS_KEY={aws_secret_key}
 
 # ========== Google Gemini API ==========
 GOOGLE_API_KEY={google_api_key}
-EMBEDDING_MODEL=models/embedding-001
+# 支持写 "gemini-embedding-001" 或 "models/gemini-embedding-001"
+EMBEDDING_MODEL=gemini-embedding-001
 
 # ========== Pinecone Configuration ==========
 PINECONE_API_KEY={pinecone_api_key}
 PINECONE_ENVIRONMENT={pinecone_env}
 PINECONE_INDEX_NAME={pinecone_index}
+PINECONE_DIMENSION=3072
 
 # ========== Chunk Configuration ==========
 CHUNK_SIZE=500
@@ -173,12 +175,14 @@ AWS_SECRET_ACCESS_KEY={config['AWS_SECRET_ACCESS_KEY']}
 
 # ========== Google Gemini API ==========
 GOOGLE_API_KEY={config['GOOGLE_API_KEY']}
-EMBEDDING_MODEL=models/embedding-001
+# 支持写 "gemini-embedding-001" 或 "models/gemini-embedding-001"
+EMBEDDING_MODEL=gemini-embedding-001
 
 # ========== Pinecone Configuration ==========
 PINECONE_API_KEY={config['PINECONE_API_KEY']}
 PINECONE_ENVIRONMENT={config['PINECONE_ENVIRONMENT']}
 PINECONE_INDEX_NAME={config['PINECONE_INDEX_NAME']}
+PINECONE_DIMENSION=3072
 
 # ========== Chunk Configuration ==========
 CHUNK_SIZE=500

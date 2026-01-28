@@ -12,7 +12,8 @@ if not api_key:
 genai.configure(api_key=api_key)
 
 texts = ["This is a test document.", "Another test document."]
-model = "models/embedding-001"
+raw_model = os.getenv("EMBEDDING_MODEL", "gemini-embedding-001").strip()
+model = raw_model if raw_model.startswith("models/") else f"models/{raw_model}"
 
 try:
     print(f"Testing embedding with model: {model}")
@@ -32,6 +33,12 @@ try:
     if isinstance(result, dict) and 'embedding' in result:
         print(f"\n'embedding' field type: {type(result['embedding'])}")
         print(f"'embedding' field length: {len(result['embedding'])}")
+        if isinstance(result["embedding"], list) and result["embedding"]:
+            first = result["embedding"][0] if isinstance(result["embedding"][0], (int, float)) else None
+            if first is not None:
+                print("Detected single embedding vector output.")
+            else:
+                print("Detected batched embedding output (list of vectors).")
         
 except Exception as e:
     print(f"Error: {e}")

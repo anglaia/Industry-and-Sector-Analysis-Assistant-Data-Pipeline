@@ -48,8 +48,9 @@ EMBEDDING_PROVIDER=gemini
 # Embedding API密钥（必需，如果要用embedding功能）
 EMBEDDING_API_KEY=your-gemini-api-key
 
-# Embedding模型名称（可选，默认models/embedding-001）
-EMBEDDING_MODEL=models/embedding-001
+# Embedding模型名称（可选，默认gemini-embedding-001）
+# 支持写 "gemini-embedding-001" 或 "models/gemini-embedding-001"
+EMBEDDING_MODEL=gemini-embedding-001
 
 # 批量大小（可选，默认32）
 EMBEDDING_BATCH_SIZE=32

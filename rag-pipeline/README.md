@@ -151,8 +151,8 @@ python main.py --help
 - `CHUNK_SIZE`: 文本块大小（默认 512 字符）
 - `CHUNK_OVERLAP`: 文本块重叠（默认 50 字符）
 - `BATCH_SIZE`: Pinecone 批量上传大小（默认 100）
-- `EMBEDDING_MODEL`: Gemini 嵌入模型（默认 `models/embedding-001`）
-- `EMBEDDING_DIMENSION`: 嵌入向量维度（默认 768）
+- `EMBEDDING_MODEL`: Gemini 嵌入模型（默认 `gemini-embedding-001`，也支持 `models/` 前缀）
+- `EMBEDDING_DIMENSION`: 嵌入向量维度（默认 3072）
 
 ## 错误处理
 
