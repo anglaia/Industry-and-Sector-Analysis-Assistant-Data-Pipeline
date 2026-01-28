@@ -38,14 +38,19 @@ AWS_SECRET_ACCESS_KEY: Optional[str] = os.getenv("AWS_SECRET_ACCESS_KEY", None)
 PINECONE_API_KEY: Optional[str] = os.getenv("PINECONE_API_KEY", None)
 PINECONE_ENVIRONMENT: str = os.getenv("PINECONE_ENVIRONMENT", "us-east-1")
 PINECONE_INDEX_NAME: str = os.getenv("PINECONE_INDEX_NAME", "industry-analysis")
-PINECONE_DIMENSION: int = int(os.getenv("PINECONE_DIMENSION", "768"))  # 默认768，根据embedding模型调整
+PINECONE_DIMENSION: int = int(os.getenv("PINECONE_DIMENSION", "3072"))  # 默认3072（gemini-embedding-001）
 PINECONE_METRIC: str = os.getenv("PINECONE_METRIC", "cosine")
 
 # ==================== Embedding API 配置 ====================
 # 支持 Gemini / OpenAI / 其他
 EMBEDDING_PROVIDER: str = os.getenv("EMBEDDING_PROVIDER", "gemini")  # "gemini" | "openai" | "other"
 EMBEDDING_API_KEY: Optional[str] = os.getenv("EMBEDDING_API_KEY", None)
-EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "models/embedding-001")  # Gemini模型名
+# Gemini 模型名：
+# - 既支持 "gemini-embedding-001"（无前缀），也支持 "models/gemini-embedding-001"
+_raw_embedding_model = os.getenv("EMBEDDING_MODEL", "gemini-embedding-001").strip()
+EMBEDDING_MODEL: str = (
+    _raw_embedding_model if _raw_embedding_model.startswith("models/") else f"models/{_raw_embedding_model}"
+)
 EMBEDDING_BATCH_SIZE: int = int(os.getenv("EMBEDDING_BATCH_SIZE", "32"))
 EMBEDDING_MAX_RETRIES: int = int(os.getenv("EMBEDDING_MAX_RETRIES", "3"))
 

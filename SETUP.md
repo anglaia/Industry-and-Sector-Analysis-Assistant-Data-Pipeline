@@ -32,9 +32,9 @@ PINECONE_ENVIRONMENT=us-east-1
 PINECONE_INDEX_NAME=industry-analysis
 
 # 向量维度（必需，必须与embedding模型匹配）
-# Gemini embedding-001: 768
+# Gemini gemini-embedding-001: 3072
 # OpenAI text-embedding-ada-002: 1536
-PINECONE_DIMENSION=768
+PINECONE_DIMENSION=3072
 
 # 相似度度量（可选，默认cosine）
 # 可选值: cosine, euclidean, dotproduct
@@ -141,10 +141,10 @@ S3_PREFIX=documents/
 ```bash
 EMBEDDING_PROVIDER=gemini
 EMBEDDING_API_KEY=your-gemini-api-key-here
-EMBEDDING_MODEL=models/embedding-001
+EMBEDDING_MODEL=gemini-embedding-001
 ```
 
-**注意：** Gemini `embedding-001` 模型的向量维度是 **768**，确保Pinecone配置中也使用 `PINECONE_DIMENSION=768`。
+**注意：** Gemini `gemini-embedding-001` 模型的向量维度是 **3072**，确保 Pinecone 配置中也使用 `PINECONE_DIMENSION=3072`。
 
 ## 步骤4：配置Pinecone（必需）
 
@@ -166,12 +166,12 @@ EMBEDDING_MODEL=models/embedding-001
 PINECONE_API_KEY=your-pinecone-api-key-here
 PINECONE_ENVIRONMENT=us-east-1  # 旧版本API需要，新版本Serverless不需要
 PINECONE_INDEX_NAME=industry-analysis
-PINECONE_DIMENSION=768  # 必须与embedding模型匹配！
+PINECONE_DIMENSION=3072  # 必须与embedding模型匹配！
 PINECONE_METRIC=cosine
 ```
 
 **重要：** `PINECONE_DIMENSION` 必须与你的embedding模型输出维度一致：
-- Gemini `embedding-001`: **768**
+- Gemini `gemini-embedding-001`: **3072**
 - OpenAI `text-embedding-ada-002`: **1536**
 
 ## 步骤5：准备PDF文件

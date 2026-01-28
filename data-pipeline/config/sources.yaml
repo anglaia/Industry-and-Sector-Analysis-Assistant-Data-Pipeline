@@ -1,0 +1,72 @@
+# AI行业数据源配置文件（简化版）
+# 专注于AI行业报告和文章的采集
+
+data_sources:
+  # McKinsey Insights - AI相关文章
+  mckinsey_ai:
+    enabled: true
+    type: scraper
+    description: "麦肯锡AI行业分析和战略报告"
+    priority: high
+    config:
+      base_url: "https://www.mckinsey.com/capabilities/quantumblack/our-insights"
+      rate_limit: "1req/3s"
+      max_articles: 10
+      # AI关键词过滤
+      keywords:
+        - artificial intelligence
+        - AI
+        - machine learning
+        - deep learning
+        - generative AI
+        - neural network
+        - large language model
+        - LLM
+        - GPT
+        - transformer
+      download_pdf: false  # 演示版本只获取在线文本
+
+# 全局配置（简化版）
+global_config:
+  # 数据质量控制
+  min_text_length: 200  # 最小文本长度
+  max_text_length: 100000  # 最大文本长度（演示用）
+  
+  # 重试配置
+  max_retries: 2
+  retry_delay: 3  # 秒
+  
+  # 超时配置
+  request_timeout: 30  # 秒
+  
+  # 存储配置
+  keep_raw_files: false  # 演示版不保留原始文件
+  cleanup_after_days: 30  # 清理天数
+
+# AI行业映射（简化版）
+industry_mapping:
+  AI:
+    keywords:
+      - artificial intelligence
+      - machine learning
+      - deep learning
+      - neural network
+      - generative AI
+      - large language model
+      - LLM
+      - transformer
+      - GPT
+      - computer vision
+      - natural language processing
+      - NLP
+      - reinforcement learning
+      - AI ethics
+      - AI strategy
+      - AI implementation
+      - AI transformation
+      - intelligent automation
+    subcategories:
+      - AI Infrastructure
+      - AI Applications
+      - AI Governance
+      - AI Research

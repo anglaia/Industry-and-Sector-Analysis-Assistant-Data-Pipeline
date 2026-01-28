@@ -144,12 +144,12 @@ pip install -r requirements.txt
    ```bash
    EMBEDDING_PROVIDER=gemini
    EMBEDDING_API_KEY=your-gemini-api-key
-   EMBEDDING_MODEL=models/embedding-001  # 默认模型
+   EMBEDDING_MODEL=gemini-embedding-001  # 默认模型（也支持 models/ 前缀）
    ```
 
 3. **确认向量维度**
-   - Gemini `embedding-001` 模型的向量维度是 **768**
-   - 确保 `PINECONE_DIMENSION=768`（在Pinecone配置中）
+   - Gemini `gemini-embedding-001` 模型的向量维度是 **3072**
+   - 确保 `PINECONE_DIMENSION=3072`（在Pinecone配置中）
 
 ### 步骤4：配置Pinecone（必需，如果要用Pinecone功能）
 
@@ -167,13 +167,13 @@ pip install -r requirements.txt
    PINECONE_API_KEY=your-pinecone-api-key
    PINECONE_ENVIRONMENT=us-east-1  # 旧版本API需要，新版本Serverless不需要
    PINECONE_INDEX_NAME=industry-analysis
-   PINECONE_DIMENSION=768  # 必须与embedding模型匹配！
+   PINECONE_DIMENSION=3072  # 必须与embedding模型匹配！
    PINECONE_METRIC=cosine
    ```
 
 4. **确认向量维度匹配**
    - **重要：** `PINECONE_DIMENSION` 必须与embedding模型的输出维度一致
-   - Gemini `embedding-001`: 768
+   - Gemini `gemini-embedding-001`: 3072
    - OpenAI `text-embedding-ada-002`: 1536
    - 如果不匹配，Pinecone会拒绝写入向量
 
