@@ -23,7 +23,10 @@ class Settings(BaseSettings):
     pinecone_dimension: int = int(os.getenv("PINECONE_DIMENSION", "3072"))
     
     # Google Gemini 配置（必需）
-    google_api_key: str = os.getenv("GOOGLE_API_KEY", "")
+    # 兼容两套命名：
+    # - data-pipeline 传统用 GOOGLE_API_KEY
+    # - 根目录管线/部分脚本用 EMBEDDING_API_KEY
+    google_api_key: str = os.getenv("GOOGLE_API_KEY", "") or os.getenv("EMBEDDING_API_KEY", "")
     # 支持 "gemini-embedding-001" 或 "models/gemini-embedding-001"
     _raw_embedding_model: str = os.getenv("EMBEDDING_MODEL", "gemini-embedding-001").strip()
     embedding_model: str = (

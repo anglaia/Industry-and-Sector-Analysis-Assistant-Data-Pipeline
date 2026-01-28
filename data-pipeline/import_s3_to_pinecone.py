@@ -45,8 +45,11 @@ class S3PDFImporter:
             secret_key: AWS Secret Key（如不提供则从环境变量读取）
         """
         # 从参数或环境变量获取配置
-        self.bucket_name = bucket_name or os.getenv('AWS_S3_BUCKET_NAME')
-        region = region or os.getenv('AWS_REGION', 'us-east-1')
+        # 兼容两套命名：
+        # - data-pipeline: AWS_S3_BUCKET_NAME / AWS_REGION
+        # - 根目录管线: S3_BUCKET_NAME / S3_REGION
+        self.bucket_name = bucket_name or os.getenv("AWS_S3_BUCKET_NAME") or os.getenv("S3_BUCKET_NAME")
+        region = region or os.getenv("AWS_REGION") or os.getenv("S3_REGION") or "us-east-1"
         access_key = access_key or os.getenv('AWS_ACCESS_KEY_ID')
         secret_key = secret_key or os.getenv('AWS_SECRET_ACCESS_KEY')
         
