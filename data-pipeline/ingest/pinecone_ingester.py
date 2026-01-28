@@ -18,7 +18,10 @@ except ImportError:
 
 # 如果无法导入 backend-ai，则自己实现
 if not BACKEND_AI_AVAILABLE:
-    import tiktoken
+    try:
+        import tiktoken  # type: ignore
+    except ImportError:  # pragma: no cover
+        tiktoken = None
     from pinecone import Pinecone, ServerlessSpec
     import google.generativeai as genai
     from config.settings import settings
@@ -34,8 +37,10 @@ if not BACKEND_AI_AVAILABLE:
             
             # 初始化 tokenizer
             try:
+                if tiktoken is None:
+                    raise ImportError("tiktoken not installed")
                 self.tokenizer = tiktoken.get_encoding("cl100k_base")
-            except:
+            except Exception:
                 self.tokenizer = None
             
             # 初始化 Gemini

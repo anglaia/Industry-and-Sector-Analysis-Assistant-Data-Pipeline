@@ -6,7 +6,7 @@ pdfplumber>=0.10.0
 boto3>=1.28.0
 
 # Pinecone (Step 3 use)
-pinecone-client>=2.2.0
+pinecone>=3.0.0
 
 # Embedding (Gemini)
 google-generativeai>=0.6.0

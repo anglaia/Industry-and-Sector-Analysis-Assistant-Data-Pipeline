@@ -1,10 +1,12 @@
 """
 Pinecone 客户端模块 - 负责初始化索引并写入向量
 """
+from __future__ import annotations
+
 import logging
 from typing import List, Dict, Any
 
-import pinecone
+from pinecone import Pinecone, ServerlessSpec
 
 from core.models import EmbeddingRecord
 from processing.metadata_builder import build_metadata
@@ -19,62 +21,58 @@ from config.settings import (
 logger = logging.getLogger(__name__)
 
 
-def init_pinecone_index() -> pinecone.Index:
+def init_pinecone_index() -> Any:
     """
     初始化 Pinecone，确保索引存在并返回 Index 对象
-    
-    注意：Pinecone API 可能有两种版本：
-    1. 旧版本：使用 environment 参数
-    2. 新版本（Serverless）：不需要 environment，直接使用 API key
+
+    说明：
+    - 该项目统一使用新版 `pinecone` SDK（Pinecone class）
+    - 不再使用已废弃的 `pinecone.init()` / `pinecone.Index()` 旧接口
     """
     if not PINECONE_API_KEY:
         raise RuntimeError("PINECONE_API_KEY 未配置，无法连接 Pinecone。")
 
+    pc = Pinecone(api_key=PINECONE_API_KEY)
+
     try:
-        # 尝试新版本API（Serverless）
-        pc = pinecone.Pinecone(api_key=PINECONE_API_KEY)
         indexes = pc.list_indexes()
-        index_names = [idx.name for idx in indexes] if hasattr(indexes, '__iter__') else []
-        
-        if PINECONE_INDEX_NAME not in index_names:
-            logger.info(
-                "Pinecone 索引不存在，正在创建：name=%s, dimension=%d, metric=%s",
-                PINECONE_INDEX_NAME,
-                PINECONE_DIMENSION,
-                PINECONE_METRIC,
-            )
-            pc.create_index(
-                name=PINECONE_INDEX_NAME,
-                dimension=PINECONE_DIMENSION,
-                metric=PINECONE_METRIC,
-            )
-        
-        logger.info("连接 Pinecone 索引：%s", PINECONE_INDEX_NAME)
-        return pc.Index(PINECONE_INDEX_NAME)
-        
-    except Exception as e:
-        # 如果新版本API失败，尝试旧版本API
-        logger.warning(f"尝试新版本API失败，使用旧版本API: {e}")
+    except Exception as e:  # noqa: BLE001
+        msg = str(e)
+        if "401" in msg or "Unauthorized" in msg or "Invalid API Key" in msg:
+            raise RuntimeError(
+                "Pinecone 鉴权失败（401 / Invalid API Key）。请确认：\n"
+                "- `.env` 里的 `PINECONE_API_KEY` 是 Pinecone 控制台最新的 API key（不要带多余空格/换行）\n"
+                "- 该 key 属于你当前使用的 Pinecone 项目\n"
+            ) from e
+        raise RuntimeError(f"无法连接 Pinecone（list_indexes 失败）: {e}") from e
+
+    # 兼容不同 SDK 返回结构
+    if hasattr(indexes, "names"):
+        index_names = list(indexes.names())
+    else:
         try:
-            pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
-            
-            if PINECONE_INDEX_NAME not in pinecone.list_indexes():
-                logger.info(
-                    "Pinecone 索引不存在，正在创建：name=%s, dimension=%d, metric=%s",
-                    PINECONE_INDEX_NAME,
-                    PINECONE_DIMENSION,
-                    PINECONE_METRIC,
-                )
-                pinecone.create_index(
-                    name=PINECONE_INDEX_NAME,
-                    dimension=PINECONE_DIMENSION,
-                    metric=PINECONE_METRIC,
-                )
-            
-            logger.info("连接 Pinecone 索引：%s", PINECONE_INDEX_NAME)
-            return pinecone.Index(PINECONE_INDEX_NAME)
-        except Exception as e2:
-            raise RuntimeError(f"无法初始化 Pinecone: {e2}") from e2
+            index_names = [idx.name for idx in indexes]
+        except Exception:  # noqa: BLE001
+            index_names = []
+
+    if PINECONE_INDEX_NAME not in index_names:
+        logger.info(
+            "Pinecone 索引不存在，正在创建：name=%s, dimension=%d, metric=%s",
+            PINECONE_INDEX_NAME,
+            PINECONE_DIMENSION,
+            PINECONE_METRIC,
+        )
+        # 新版 SDK 需要显式提供 ServerlessSpec
+        # 这里用 PINECONE_ENVIRONMENT 作为 region（例如 us-east-1），cloud 默认 aws
+        pc.create_index(
+            name=PINECONE_INDEX_NAME,
+            dimension=PINECONE_DIMENSION,
+            metric=PINECONE_METRIC,
+            spec=ServerlessSpec(cloud="aws", region=PINECONE_ENVIRONMENT),
+        )
+
+    logger.info("连接 Pinecone 索引：%s", PINECONE_INDEX_NAME)
+    return pc.Index(PINECONE_INDEX_NAME)
 
 
 def build_pinecone_vectors(
@@ -107,7 +105,7 @@ def build_pinecone_vectors(
     return vectors
 
 
-def upsert_vectors(index: pinecone.Index, vectors: List[Dict[str, Any]], batch_size: int = 100) -> None:
+def upsert_vectors(index: Any, vectors: List[Dict[str, Any]], batch_size: int = 100) -> None:
     """
     将向量批量写入 Pinecone
     """
