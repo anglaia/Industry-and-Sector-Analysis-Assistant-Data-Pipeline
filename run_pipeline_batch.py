@@ -29,7 +29,8 @@ logger = logging.getLogger(__name__)
 def process_batch(
     input_dir: str,
     industry: str = "education",
-    year: Optional[str] = None
+    year: Optional[str] = None,
+    max_files: Optional[int] = None,
 ) -> None:
     """
     批量处理指定目录下的所有 PDF 文件
@@ -42,6 +43,10 @@ def process_batch(
 
     # 获取所有 PDF 文件
     pdf_files = list(input_path.glob("*.pdf"))
+
+    # 如果设置了最大文件数，则裁剪列表
+    if max_files is not None and max_files > 0:
+        pdf_files = pdf_files[:max_files]
     
     if not pdf_files:
         logger.warning("在目录 %s 中未找到任何 PDF 文件", input_path)
@@ -86,12 +91,14 @@ if __name__ == "__main__":
     parser.add_argument("--input_dir", type=str, default="data", help="包含 PDF 文件的输入目录 (默认: data)")
     parser.add_argument("--industry", type=str, default="education", help="文档所属行业 (默认: education)")
     parser.add_argument("--year", type=str, default=None, help="文档年份 (可选)")
-    
+    parser.add_argument("--max-files", type=int, default=None, help="最多处理的 PDF 文件数量 (默认: 不限制)")
+
     args = parser.parse_args()
-    
+
     process_batch(
         input_dir=args.input_dir,
         industry=args.industry,
-        year=args.year
+        year=args.year,
+        max_files=args.max_files,
     )
 

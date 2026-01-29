@@ -63,10 +63,9 @@ class Chunk:
     # 引用必需字段（2个必需）
     page_number: int  # 主要页码（单页chunk=该页，跨页chunk=起始页）
     source_file: str  # 来自Document.source_file
-    s3_url: Optional[str] = None  # 来自Document
     
     # === 可选字段（有默认值）放在后面 ===
-    # 引用必需字段（1个可选）
+    # 引用可选字段
     s3_url: Optional[str] = None  # 来自Document
     
     # 跨页字段（可选，但强烈建议写上）
